@@ -19,17 +19,21 @@ import org.bukkit.inventory.ItemStack;
  * @author redsgreens
  */
 public class AppleseedPlayerListener implements Listener {
+	private Appleseed pl;
+
+	public AppleseedPlayerListener(Appleseed plugin) {
+		this.pl = plugin;
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerInteract(PlayerInteractEvent event)
-    // catch player right-click events
-    {
-    	// return if the event is already cancelled, or if it's not a right-click event
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		// catch player right-click events
+		// return if the event is already cancelled, or if it's not a right-click event
 		if(event.isCancelled() || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
 		Block block = event.getClickedBlock();
 		Material blockType = block.getType();
-		
+
 		// return if the player didn't right click on farmland or tree
 		if(blockType != Material.SOIL && blockType != Material.LOG)
 			return;
@@ -43,68 +47,62 @@ public class AppleseedPlayerListener implements Listener {
 		if(blockType == Material.SOIL)
 			// player is trying to plant something
 			handlePlantEvent(event, player, iStack, block);
-		
-		else if(blockType == Material.LOG && iStack.getType() == Appleseed.Config.FertilizerItem.getMaterial() && iStack.getDurability() == Appleseed.Config.FertilizerItem.getDurability())
+
+		else if(blockType == Material.LOG && iStack.getType() == pl.getAppleseedConfig().FertilizerItem.getMaterial() && iStack.getDurability() == pl.getAppleseedConfig().FertilizerItem.getDurability())
 			// player is trying to fertilize a tree
 			handleFertilzeEvent(event, player, iStack, block);
-		
-		else if(blockType == Material.LOG && iStack.getType() == Appleseed.Config.WandItem.getMaterial())
+
+		else if(blockType == Material.LOG && iStack.getType() == pl.getAppleseedConfig().WandItem.getMaterial())
 			// player used the wand on a tree
 			handleWandEvent(event, player, iStack, block);
-    }
-	
-	private void handlePlantEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block)
-	{
+	}
+
+	private void handlePlantEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block) {
 		// they might have planted something, do some more checks
 
 		// try to get the type of the tree they are planting
 		AppleseedTreeType treeType = null;
 		AppleseedItemStack aiStack = new AppleseedItemStack(iStack);
-		if(Appleseed.Config.TreeTypes.containsKey(aiStack))
-			treeType = Appleseed.Config.TreeTypes.get(aiStack);
-		
+		if(pl.getAppleseedConfig().TreeTypes.containsKey(aiStack))
+			treeType = pl.getAppleseedConfig().TreeTypes.get(aiStack);
+
 		// return if they don't have an allowed item in hand
 		if(treeType == null)
 			return;
-		
+
 		// return if the block above is not air
 		Block blockRoot = block.getRelative(BlockFace.UP);
 		if(blockRoot.getType() != Material.AIR)
 			return;
 
 		// return if they don't have permission
-		if(!Appleseed.PlayerManager.hasPermission(player, "plant." + AppleseedItemStack.getItemStackName(aiStack)) || !Appleseed.PlayerManager.canBuild(player, blockRoot))
-		{
-			if(Appleseed.Config.ShowErrorsInClient)
+		if(!pl.getPlayerManager().hasPermission(player, "plant." + AppleseedItemStack.getItemStackName(aiStack)) || !pl.getPlayerManager().canBuild(player, blockRoot)) {
+			if(pl.getAppleseedConfig().ShowErrorsInClient)
 				player.sendMessage("§cErr: You don't have permission to plant this tree.");
 			event.setCancelled(true);
 			return;
 		}
+		
 		// return if they have already planted their share of trees
-		if(Appleseed.Config.MaxTreesPerPlayer != -1 && !Appleseed.PlayerManager.hasPermission(player, "infinite.cap"))
-		{
+		if(pl.getAppleseedConfig().MaxTreesPerPlayer != -1 && !pl.getPlayerManager().hasPermission(player, "infinite.cap")) {
 			String playerName = player.getName();
 			String worldName = player.getLocation().getWorld().getName();
-			if(!Appleseed.TreeManager.CanPlayerAddTree(playerName, worldName))
-			{
-				if(Appleseed.Config.ShowErrorsInClient)
-				{
-					if(Appleseed.Config.MaxIsPerWorld)
-						player.sendMessage("§cErr: You are not allowed to plant more trees in this world. (" + Appleseed.TreeManager.getPlayerTreeCount(playerName, worldName) + "/" + Appleseed.Config.MaxTreesPerPlayer.toString() + ")");
+			if(!pl.getTreeManager().CanPlayerAddTree(playerName, worldName)) {
+				if(pl.getAppleseedConfig().ShowErrorsInClient) {
+					if(pl.getAppleseedConfig().MaxIsPerWorld)
+						player.sendMessage("§cErr: You are not allowed to plant more trees in this world. (" + pl.getTreeManager().getPlayerTreeCount(playerName, worldName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
 					else
-						player.sendMessage("§cErr: You are not allowed to plant more trees. (" + Appleseed.TreeManager.getPlayerTreeCount(playerName) + "/" + Appleseed.Config.MaxTreesPerPlayer.toString() + ")");
+						player.sendMessage("§cErr: You are not allowed to plant more trees. (" + pl.getTreeManager().getPlayerTreeCount(playerName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
 				}
 				event.setCancelled(true);
 				return;
 			}
 		}
-		
-		if(Appleseed.Config.MinimumTreeDistance != -1)
-		{
+
+		if(pl.getAppleseedConfig().MinimumTreeDistance != -1) {
 			// MinimumTreeDistance is set, make sure this tree won't be too close to another
-			if(Appleseed.TreeManager.IsNewTreeTooClose(blockRoot.getLocation()))
-			{
-				if(Appleseed.Config.ShowErrorsInClient)
+			if(pl.getTreeManager().IsNewTreeTooClose(blockRoot.getLocation())) {
+				if(pl.getAppleseedConfig().ShowErrorsInClient)
 					player.sendMessage("§cErr: Too close to another tree.");
 				event.setCancelled(true);
 				return;
@@ -112,65 +110,56 @@ public class AppleseedPlayerListener implements Listener {
 		}
 
 		// all tests satisfied, proceed
-		
+
 		// cancel the event so we're the only one processing it
 		event.setCancelled(true);
-		
+
 		// add the root location and type to the list of trees
-		if(Appleseed.PlayerManager.hasPermission(player, "infinite.plant"))
-			Appleseed.TreeManager.AddTree(new AppleseedLocation(blockRoot.getLocation()), aiStack, AppleseedCountMode.Infinite, -1, -1, -1, player.getName());
+		if(pl.getPlayerManager().hasPermission(player, "infinite.plant"))
+			pl.getTreeManager().AddTree(new AppleseedLocation(blockRoot.getLocation()), aiStack, AppleseedCountMode.Infinite, -1, -1, -1, player.getName());
 		else
-			Appleseed.TreeManager.AddTree(new AppleseedLocation(blockRoot.getLocation()), aiStack, player.getName());
-		
+			pl.getTreeManager().AddTree(new AppleseedLocation(blockRoot.getLocation()), aiStack, player.getName());
+
 		// set the clicked block to dirt
 		block.setType(Material.DIRT);
-		
+
 		// plant a sapling
 		blockRoot.setType(Material.SAPLING);
 		blockRoot.setData(treeType.getSaplingData());
-		
+
 		// take the item from the player
-		if(player.getGameMode() != GameMode.CREATIVE)
-		{
+		if(player.getGameMode() != GameMode.CREATIVE) {
 			if(iStack.getAmount() == 1)
 				player.setItemInHand(null);
-			else
-			{
+			else {
 				iStack.setAmount(iStack.getAmount() - 1);
 				player.setItemInHand(iStack);			
 			}
 		}
 	}
-	
-	private void handleFertilzeEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block)
-	{
+
+	private void handleFertilzeEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block) {
 		// they might be fertilizing a tree
-		
+
 		Location loc = block.getLocation();
-		if(!Appleseed.TreeManager.isTree(loc))
+		if(!pl.getTreeManager().isTree(loc))
 			return;
 
 		// cancel the event so we're the only one processing it
 		event.setCancelled(true);
 
-		AppleseedTreeData tree = Appleseed.TreeManager.GetTree(new AppleseedLocation(loc));
-		
+		AppleseedTreeData tree = pl.getTreeManager().GetTree(new AppleseedLocation(loc));
+
 		Boolean treesUpdated = false;
-		if(Appleseed.PlayerManager.hasPermission(player, "infinite.fertilizer"))
-		{
+		if(pl.getPlayerManager().hasPermission(player, "infinite.fertilizer")) {
 			tree.setInfinite();
 			treesUpdated = true;
-		}
-		else
-		{
-			if(tree.Fertilize())
-			{
+		} else {
+			if(tree.Fertilize()) {
 				tree.ResetDropCount();
 				treesUpdated = true;
-			}
-			else
-			{
-				if(Appleseed.Config.ShowErrorsInClient)
+			} else {
+				if(pl.getAppleseedConfig().ShowErrorsInClient)
 					player.sendMessage("§cErr: This tree cannot be fertilized.");
 				event.setCancelled(true);
 				return;
@@ -179,24 +168,21 @@ public class AppleseedPlayerListener implements Listener {
 
 		if(treesUpdated == true)
 			if(tree.hasSign())
-				Appleseed.TreeManager.updateSign(tree);
+				pl.getTreeManager().updateSign(tree);
 
 		// take the item from the player
 		if(iStack.getAmount() == 1)
 			player.setItemInHand(null);
-		else
-		{
+		else {
 			iStack.setAmount(iStack.getAmount() - 1);
 			player.setItemInHand(iStack);			
 		}
 	}
-	
-	private void handleWandEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block)
-	{
+
+	private void handleWandEvent(PlayerInteractEvent event, Player player, ItemStack iStack, Block block) {
 		// they clicked with the wand
-		if(!Appleseed.PlayerManager.hasPermission(player, "wand"))
-		{
-			if(Appleseed.Config.ShowErrorsInClient)
+		if(!pl.getPlayerManager().hasPermission(player, "wand")) {
+			if(pl.getAppleseedConfig().ShowErrorsInClient)
 				player.sendMessage("§cErr: You don't have permission to do this.");
 			event.setCancelled(true);
 			return;
@@ -206,20 +192,14 @@ public class AppleseedPlayerListener implements Listener {
 		event.setCancelled(true);
 
 		Location loc = block.getLocation();
-		if(!Appleseed.TreeManager.isTree(loc))
-		{
+		if(!pl.getTreeManager().isTree(loc)) {
 			player.sendMessage("§cErr: This is not an Appleseed tree.");
 			return;
-		}
-		else
-		{
-			AppleseedTreeData tree = Appleseed.TreeManager.GetTree(new AppleseedLocation(loc));
+		} else {
+			AppleseedTreeData tree = pl.getTreeManager().GetTree(new AppleseedLocation(loc));
 			AppleseedItemStack treeIS = tree.getItemStack();
 
-			player.sendMessage("§cAppleseed: Type=" + AppleseedItemStack.getItemStackName(treeIS) + ", NeedsFertilizer=" + tree.needsFertilizer().toString() + ", HasSign=" + tree.hasSign());				
+			player.sendMessage("§cAppleseed: Type=" + AppleseedItemStack.getItemStackName(treeIS) + ", NeedsFertilizer=" + tree.needsFertilizer() + ", HasSign=" + tree.hasSign());				
 		}
 	}
-
-
 }
-

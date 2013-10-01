@@ -1,4 +1,6 @@
-Appleseed - Plant trees that drop apples on the ground (or other items!):
+Appleseed
+====
+Plant trees that drop apples on the ground (or other items!)
 
 There are other plugins out there that make trees drop apples/items when you break the leaves, but this 
 plugin doesn't do that. With Appleseed, all existing trees are left as-is. To get an apple tree, you 

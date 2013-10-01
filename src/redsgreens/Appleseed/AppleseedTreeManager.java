@@ -32,7 +32,8 @@ import org.yaml.snakeyaml.Yaml;
  * @author redsgreens
  */
 public class AppleseedTreeManager {
-
+	private Appleseed pl;
+	
     // hashmap of tree worlds, locations and data
     private HashMap<String, HashMap<AppleseedLocation, AppleseedTreeData>> WorldTrees = new HashMap<String, HashMap<AppleseedLocation, AppleseedTreeData>>();
 
@@ -43,8 +44,8 @@ public class AppleseedTreeManager {
     final int treeId = Material.LOG.getId();
     final int leafId = Material.LEAVES.getId();
 
-	public AppleseedTreeManager()
-	{
+	public AppleseedTreeManager(Appleseed plugin) {
+		this.pl = plugin;
 		loadTrees();
 	}
 	
@@ -52,11 +53,10 @@ public class AppleseedTreeManager {
     public synchronized void ProcessTrees(){
 
     	// only process trees in loaded worlds
-    	List<World> worlds = Appleseed.Plugin.getServer().getWorlds();
+    	List<World> worlds = pl.getServer().getWorlds();
 		Iterator<World> worldItr = worlds.iterator();
 		
-		while(worldItr.hasNext())
-		{
+		while(worldItr.hasNext()) {
 			World world = worldItr.next();
 			String worldName = world.getName();
 			
@@ -91,7 +91,7 @@ public class AppleseedTreeManager {
 								AppleseedItemStack iStack = tree.getItemStack();
 								if(iStack != null)
 								{
-									AppleseedTreeType treeType = Appleseed.Config.TreeTypes.get(iStack);
+									AppleseedTreeType treeType = pl.getAppleseedConfig().TreeTypes.get(iStack);
 
 									if(treeType != null)
 									{
@@ -117,7 +117,7 @@ public class AppleseedTreeManager {
 										{
 						    				Item item = loc.getWorld().dropItemNaturally(loc, tree.getItemStack().getItemStack());
 						    				
-						    				if(Appleseed.Config.MaxUncollectedItems != -1)
+						    				if(pl.getAppleseedConfig().MaxUncollectedItems != -1)
 						    				{
 						    					List<Entity> itemList = item.getNearbyEntities(10, 10, 10);
 						    					Iterator<Entity> itemItr = itemList.iterator();
@@ -134,7 +134,7 @@ public class AppleseedTreeManager {
 						    						}
 						    					}
 						    					
-						    					if(count > Appleseed.Config.MaxUncollectedItems)
+						    					if(count > pl.getAppleseedConfig().MaxUncollectedItems)
 						    						item.remove();
 						    				}
 										}
@@ -164,11 +164,11 @@ public class AppleseedTreeManager {
 		}
 
     	// reprocess the list every interval
-		Appleseed.Plugin.getServer().getScheduler().scheduleSyncDelayedTask(Appleseed.Plugin, new Runnable() {
+		pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
 		    public void run() {
 		    	ProcessTrees();
 		    }
-		}, Appleseed.Config.DropInterval*20);
+		}, pl.getAppleseedConfig().DropInterval*20);
 
     }
 
@@ -176,14 +176,14 @@ public class AppleseedTreeManager {
     public synchronized void AddTree(AppleseedLocation loc, AppleseedItemStack iStack, String player)
     {
 //    	Appleseed.PlayerManager.CapAddTree(player, loc.getWorldName());
-    	WorldTrees.get(loc.getWorldName()).put(loc, new AppleseedTreeData(loc, iStack, player));
+    	WorldTrees.get(loc.getWorldName()).put(loc, new AppleseedTreeData(pl, loc, iStack, player));
     }
 
     // add a tree to the hashmap
     public synchronized void AddTree(AppleseedLocation loc, AppleseedItemStack iStack, AppleseedCountMode cm, Integer dropcount, Integer fertilizercount, Integer intervalcount, String player)
     {
 //    	Appleseed.PlayerManager.CapAddTree(player, loc.getWorldName());
-    	WorldTrees.get(loc.getWorldName()).put(loc, new AppleseedTreeData(loc, iStack, cm, dropcount, fertilizercount, intervalcount, player));
+    	WorldTrees.get(loc.getWorldName()).put(loc, new AppleseedTreeData(pl, loc, iStack, cm, dropcount, fertilizercount, intervalcount, player));
     }
 
     // return a tree if there is one at the specified location
@@ -197,7 +197,7 @@ public class AppleseedTreeManager {
     	else 
     	{
     		// the location is not the root of a tree, scan down to see if they clicked above the root
-    		World world = Appleseed.Plugin.getServer().getWorld(loc.getWorldName());
+    		World world = pl.getServer().getWorld(loc.getWorldName());
     		if(world == null)
     			return null;
     		
@@ -230,7 +230,7 @@ public class AppleseedTreeManager {
     	Iterator<AppleseedLocation> itr = locations.iterator();
     	
     	while(itr.hasNext())
-    		if(calcDistanceSquared(itr.next().getLocation(), loc) < (Appleseed.Config.MinimumTreeDistance * Appleseed.Config.MinimumTreeDistance))
+    		if(calcDistanceSquared(itr.next().getLocation(), loc) < (pl.getAppleseedConfig().MinimumTreeDistance * pl.getAppleseedConfig().MinimumTreeDistance))
     			return true;
     	
     	return false;
@@ -297,13 +297,13 @@ public class AppleseedTreeManager {
     	try
     	{
     		// load trees for all loaded worlds
-    		List<World> worlds = Appleseed.Plugin.getServer().getWorlds();
+    		List<World> worlds = pl.getServer().getWorlds();
     		Iterator<World> worldItr = worlds.iterator();
     		while(worldItr.hasNext())
     			loadTrees(worldItr.next().getName());
     		
     		// load trees from old style trees.yml file 
-            File inFile = new File(Appleseed.Plugin.getDataFolder(), "trees.yml");
+            File inFile = new File(pl.getDataFolder(), "trees.yml");
             if (inFile.exists()){
             	Integer importedCount = 0;
                 Yaml yaml = new Yaml();
@@ -314,7 +314,7 @@ public class AppleseedTreeManager {
                 {
                 	HashMap<String, Object> treeHash = loadData.get(i);
 
-                	AppleseedTreeData tree = AppleseedTreeData.LoadFromHash(treeHash);
+                	AppleseedTreeData tree = AppleseedTreeData.LoadFromHash(pl, treeHash);
                 	
                 	if(tree != null)
                 	{
@@ -331,7 +331,7 @@ public class AppleseedTreeManager {
                 }
                 
                 fis.close();
-                inFile.renameTo(new File(Appleseed.Plugin.getDataFolder(), "trees.yml.old"));
+                inFile.renameTo(new File(pl.getDataFolder(), "trees.yml.old"));
                 saveTrees();
             	System.out.println("Appleseed: Imported " + importedCount.toString() + " trees from trees.yml.");
             }
@@ -357,7 +357,7 @@ public class AppleseedTreeManager {
 
         try {
 			Yaml yaml = new Yaml();
-			File inFile = new File(Appleseed.Plugin.getDataFolder(), "trees-" + world + ".yml");
+			File inFile = new File(pl.getDataFolder(), "trees-" + world + ".yml");
 			if (inFile.exists()){
 			    FileInputStream fis = new FileInputStream(inFile);
 			    ArrayList<HashMap<String, Object>> loadData = (ArrayList<HashMap<String, Object>>)yaml.load(fis);
@@ -366,7 +366,7 @@ public class AppleseedTreeManager {
 			    {
 			    	HashMap<String, Object> treeHash = loadData.get(i);
 
-			    	AppleseedTreeData tree = AppleseedTreeData.LoadFromHash(treeHash);
+			    	AppleseedTreeData tree = AppleseedTreeData.LoadFromHash(pl, treeHash);
 			    	
 			    	if(tree != null)
 			    		if(!trees.containsKey(tree.getLocation()))
@@ -414,7 +414,7 @@ public class AppleseedTreeManager {
 	    	try
 	    	{
 	            Yaml yaml = new Yaml();
-	            File outFile = new File(Appleseed.Plugin.getDataFolder(), "trees-" + world + ".yml");
+	            File outFile = new File(pl.getDataFolder(), "trees-" + world + ".yml");
 	            FileOutputStream fos = new FileOutputStream(outFile);
 	            OutputStreamWriter out = new OutputStreamWriter(fos);
 	            out.write(yaml.dump(saveData));
@@ -432,9 +432,8 @@ public class AppleseedTreeManager {
     }
 
     // schedule saveTrees() for 10 tics from now (generally .5 sec)
-    private synchronized void asyncSaveTrees()
-    {
-		Appleseed.Plugin.getServer().getScheduler().runTaskLaterAsynchronously(Appleseed.Plugin, new Runnable() {
+    private synchronized void asyncSaveTrees() {
+		pl.getServer().getScheduler().runTaskLaterAsynchronously(pl, new Runnable() {
 		    public void run() {
 		    	if(!SaveRunning)
 		    		saveTrees();
@@ -511,7 +510,7 @@ public class AppleseedTreeManager {
     	if(!tree.hasSign())
     		return;
     	
-    	World world = Appleseed.Plugin.getServer().getWorld(tree.getWorld());
+    	World world = pl.getServer().getWorld(tree.getWorld());
     	if(world == null)
     		return;
     	
@@ -527,7 +526,7 @@ public class AppleseedTreeManager {
     	else
     	{
     		sign = (Sign)block.getState();
-    		if(!sign.getLine(0).equals("§1[" + Appleseed.Config.SignTag + "]"))
+    		if(!sign.getLine(0).equals("§1[" + pl.getAppleseedConfig().SignTag + "]"))
     			signInvalid = true;
     	}
 
@@ -584,16 +583,16 @@ public class AppleseedTreeManager {
 
 	public Boolean CanPlayerAddTree(String player, String world)
 	{
-		if(Appleseed.Config.MaxTreesPerPlayer == -1)
+		if(pl.getAppleseedConfig().MaxTreesPerPlayer == -1)
 			return true;
 
 		Integer treeCount;
-		if(Appleseed.Config.MaxIsPerWorld)
+		if(pl.getAppleseedConfig().MaxIsPerWorld)
 			treeCount = getPlayerTreeCount(player, world);
 		else
 			treeCount = getPlayerTreeCount(player);
 
-		if(treeCount < Appleseed.Config.MaxTreesPerPlayer)
+		if(treeCount < pl.getAppleseedConfig().MaxTreesPerPlayer)
 			return true;
 		else
 			return false;

@@ -11,13 +11,17 @@ import org.bukkit.event.world.WorldLoadEvent;
  * @author redsgreens
  */
 public class AppleseedWorldListener implements Listener {
+	private Appleseed pl;
+
+	public AppleseedWorldListener(Appleseed plugin) {
+		this.pl = plugin;
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-    public void onWorldLoad(WorldLoadEvent event)
-	{
+	public void onWorldLoad(WorldLoadEvent event) {
 		// the trees for a world aren't loaded until the world itself is loaded
 		String world = event.getWorld().getName();
-		if(!Appleseed.TreeManager.isWorldLoaded(world))
-			Appleseed.TreeManager.loadTrees(world);
+		if(!pl.getTreeManager().isWorldLoaded(world))
+			pl.getTreeManager().loadTrees(world);
 	}
 }

@@ -30,12 +30,10 @@ public class AppleseedConfig {
 	public HashMap<AppleseedItemStack, AppleseedTreeType> TreeTypes = new HashMap<AppleseedItemStack, AppleseedTreeType>();
 
 	@SuppressWarnings("unchecked")
-	public void LoadConfig()
-	{
-		try
-		{
+	public void LoadConfig(Appleseed plugin) {
+		try {
 			// create the data folder if it doesn't exist
-			File folder = Appleseed.Plugin.getDataFolder();
+			File folder = plugin.getDataFolder();
 	    	if(!folder.exists())
 	    		folder.mkdirs();
     	
@@ -59,75 +57,68 @@ public class AppleseedConfig {
 			
 			try{
 				configMap = (HashMap<String,Object>)yaml.load(rx);
-			}
-			catch (Exception ex){
-				System.out.println(ex.getMessage());
-			}
-			finally
-			{
+			} catch (Exception ex){
+				plugin.getLogger().info(ex.getMessage());
+			} finally {
 				rx.close();
 			}
 
 			if(configMap.containsKey("ShowErrorsInClient"))
 				ShowErrorsInClient = (Boolean)configMap.get("ShowErrorsInClient");
-			System.out.println("Appleseed: ShowErrorsInClient=" + ShowErrorsInClient.toString());
+			plugin.getLogger().info("Appleseed: ShowErrorsInClient=" + ShowErrorsInClient.toString());
 
-			if(configMap.containsKey("AllowNonOpAccess"))
-			{
+			if(configMap.containsKey("AllowNonOpAccess")) {
 				AllowNonOpAccess = (Boolean)configMap.get("AllowNonOpAccess");
 				if(AllowNonOpAccess == true)
-					System.out.println("Appleseed: AllowNonOpAccess=" + AllowNonOpAccess.toString());
+					plugin.getLogger().info("Appleseed: AllowNonOpAccess=" + AllowNonOpAccess.toString());
 			}
 
 			if(configMap.containsKey("DropInterval"))
 				DropInterval = (Integer)configMap.get("DropInterval");
-			System.out.println("Appleseed: DropInterval=" + DropInterval.toString() + " seconds");
+			plugin.getLogger().info("Appleseed: DropInterval=" + DropInterval.toString() + " seconds");
 
 			if(configMap.containsKey("MaxTreesPerPlayer"))
 				MaxTreesPerPlayer = (Integer)configMap.get("MaxTreesPerPlayer");
 			if(MaxTreesPerPlayer != -1)
-				System.out.println("Appleseed: MaxTreesPerPlayer=" + MaxTreesPerPlayer.toString());
+				plugin.getLogger().info("Appleseed: MaxTreesPerPlayer=" + MaxTreesPerPlayer.toString());
 
 			if(configMap.containsKey("MaxUncollectedItems"))
 				MaxUncollectedItems = (Integer)configMap.get("MaxUncollectedItems");
 			if(MaxUncollectedItems != -1)
-				System.out.println("Appleseed: MaxUncollectedItems=" + MaxUncollectedItems.toString());
+				plugin.getLogger().info("Appleseed: MaxUncollectedItems=" + MaxUncollectedItems.toString());
 
-			if(configMap.containsKey("MaxIsPerWorld") && MaxTreesPerPlayer != -1)
-			{
+			if(configMap.containsKey("MaxIsPerWorld") && MaxTreesPerPlayer != -1) {
 				MaxIsPerWorld = (Boolean)configMap.get("MaxIsPerWorld");
-				System.out.println("Appleseed: MaxIsPerWorld=" + MaxIsPerWorld.toString());
+				plugin.getLogger().info("Appleseed: MaxIsPerWorld=" + MaxIsPerWorld.toString());
 			}
 
-			if(configMap.containsKey("WandItem"))
-			{
+			if(configMap.containsKey("WandItem")) {
 				String wiStr = configMap.get("WandItem").toString();
 				WandItem = AppleseedItemStack.getItemStackFromName(wiStr);
 			}
-			System.out.println("Appleseed: WandItem=" + AppleseedItemStack.getItemStackName(WandItem).toLowerCase());
+			
+			plugin.getLogger().info("Appleseed: WandItem=" + AppleseedItemStack.getItemStackName(WandItem).toLowerCase());
 
-			if(configMap.containsKey("FertilizerItem"))
-			{
+			if(configMap.containsKey("FertilizerItem")) {
 				String fiStr = configMap.get("FertilizerItem").toString();
 				FertilizerItem = AppleseedItemStack.getItemStackFromName(fiStr);
 			}
-			System.out.println("Appleseed: FertilizerItem=" + AppleseedItemStack.getItemStackName(FertilizerItem).toLowerCase());
+			plugin.getLogger().info("Appleseed: FertilizerItem=" + AppleseedItemStack.getItemStackName(FertilizerItem).toLowerCase());
 
 			if(configMap.containsKey("MinimumTreeDistance"))
 				MinimumTreeDistance = (Integer)configMap.get("MinimumTreeDistance");
 			if(MinimumTreeDistance == -1)
-				System.out.println("Appleseed: MinimumTreeDistance=disabled");
+				plugin.getLogger().info("Appleseed: MinimumTreeDistance=disabled");
 			else
-				System.out.println("Appleseed: MinimumTreeDistance=" + MinimumTreeDistance.toString());
+				plugin.getLogger().info("Appleseed: MinimumTreeDistance=" + MinimumTreeDistance.toString());
 
 			if(configMap.containsKey("SignTag"))
 				SignTag = configMap.get("SignTag").toString();
-			System.out.println("Appleseed: SignTag=" + SignTag);
+			plugin.getLogger().info("Appleseed: SignTag=" + SignTag);
 
 			if(!configMap.containsKey("TreeTypes"))
-				System.out.println("Appleseed: TreeTypes=");
-			else
-			{
+				plugin.getLogger().info("Appleseed: TreeTypes=");
+			else {
 				HashMap<String, HashMap<String, Object>> treeTypes = (HashMap<String, HashMap<String, Object>>)configMap.get("TreeTypes");
 
 				// process list of tree types
@@ -148,8 +139,7 @@ public class AppleseedConfig {
 
 				String strTreeTypes = "";
 				Iterator<AppleseedItemStack> itr2 = TreeTypes.keySet().iterator();
-				while(itr2.hasNext())
-				{
+				while(itr2.hasNext()) {
 					AppleseedItemStack is = itr2.next();
 					if(strTreeTypes.length() != 0)
 						strTreeTypes = strTreeTypes + ",";
@@ -157,11 +147,11 @@ public class AppleseedConfig {
 					strTreeTypes = strTreeTypes + AppleseedItemStack.getItemStackName(is);
 				}
 				
-				System.out.println("Appleseed: TreeTypes=(" + strTreeTypes +")");
+				plugin.getLogger().info("Appleseed: TreeTypes=(" + strTreeTypes +")");
 			}
 		}
 		catch (Exception ex){
-			System.out.println(ex.getStackTrace());
+			ex.printStackTrace();
 		}
 	}
 }
