@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -146,7 +148,7 @@ public class AppleseedTreeManager {
 						    				updateSign(tree);
 									}
 									else
-										System.out.println("Appleseed: No TreeType in config.yml for \"" + AppleseedItemStack.getItemStackName(iStack) + "\"");
+										pl.getLogger().info("Appleseed: No TreeType in config.yml for \"" + AppleseedItemStack.getItemStackName(iStack) + "\"");
 								}
 							}
 							else if(world.getBlockAt(loc).getType() != Material.SAPLING)
@@ -154,7 +156,7 @@ public class AppleseedTreeManager {
 
 						}
 					} catch (Exception e) {
-						System.out.println("Appleseed: Error dropping item in world \"" + aloc.getWorldName() + "\"");
+						pl.getLogger().info("Appleseed: Error dropping item in world \"" + aloc.getWorldName() + "\"");
 					}
 	        	}
 
@@ -333,7 +335,7 @@ public class AppleseedTreeManager {
                 fis.close();
                 inFile.renameTo(new File(pl.getDataFolder(), "trees.yml.old"));
                 saveTrees();
-            	System.out.println("Appleseed: Imported " + importedCount.toString() + " trees from trees.yml.");
+            	pl.getLogger().info("Appleseed: Imported " + importedCount.toString() + " trees from trees.yml.");
             }
     	}
     	catch (Exception ex)
@@ -377,7 +379,7 @@ public class AppleseedTreeManager {
 			e.printStackTrace();
 		}
 
-    	System.out.println("Appleseed: " + ((Integer)trees.size()).toString() + " trees loaded in world " + world + ".");
+    	pl.getLogger().info("Appleseed: " + ((Integer)trees.size()).toString() + " trees loaded in world " + world + ".");
     }
 
     public Boolean isWorldLoaded(String world)
@@ -526,7 +528,7 @@ public class AppleseedTreeManager {
     	else
     	{
     		sign = (Sign)block.getState();
-    		if(!sign.getLine(0).equals("§1[" + pl.getAppleseedConfig().SignTag + "]"))
+    		if(!sign.getLine(0).equals(ChatColor.DARK_BLUE + "[" + pl.getAppleseedConfig().SignTag + "]"))
     			signInvalid = true;
     	}
 
@@ -539,11 +541,11 @@ public class AppleseedTreeManager {
     	
     	String prefix;
     	if(tree.needsFertilizer())
-    		prefix = "§c";
+    		prefix = ChatColor.RED + "";
     	else if(tree.isInfinite())
-    		prefix = "§b";
+    		prefix = ChatColor.AQUA + "";
     	else
-    		prefix = "§a";
+    		prefix = ChatColor.GREEN + "";
 
     	sign.setLine(1, "");
     	sign.setLine(2, prefix + AppleseedItemStack.getItemStackName(tree.getItemStack()));

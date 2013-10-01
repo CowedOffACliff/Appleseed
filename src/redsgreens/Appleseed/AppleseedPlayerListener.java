@@ -1,5 +1,6 @@
 package redsgreens.Appleseed;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -78,7 +79,7 @@ public class AppleseedPlayerListener implements Listener {
 		// return if they don't have permission
 		if(!pl.getPlayerManager().hasPermission(player, "plant." + AppleseedItemStack.getItemStackName(aiStack)) || !pl.getPlayerManager().canBuild(player, blockRoot)) {
 			if(pl.getAppleseedConfig().ShowErrorsInClient)
-				player.sendMessage("§cErr: You don't have permission to plant this tree.");
+				player.sendMessage("ï¿½cErr: You don't have permission to plant this tree.");
 			event.setCancelled(true);
 			return;
 		}
@@ -90,9 +91,9 @@ public class AppleseedPlayerListener implements Listener {
 			if(!pl.getTreeManager().CanPlayerAddTree(playerName, worldName)) {
 				if(pl.getAppleseedConfig().ShowErrorsInClient) {
 					if(pl.getAppleseedConfig().MaxIsPerWorld)
-						player.sendMessage("§cErr: You are not allowed to plant more trees in this world. (" + pl.getTreeManager().getPlayerTreeCount(playerName, worldName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
+						player.sendMessage(ChatColor.RED + "Err: You are not allowed to plant more trees in this world. (" + pl.getTreeManager().getPlayerTreeCount(playerName, worldName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
 					else
-						player.sendMessage("§cErr: You are not allowed to plant more trees. (" + pl.getTreeManager().getPlayerTreeCount(playerName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
+						player.sendMessage(ChatColor.RED + "Err: You are not allowed to plant more trees. (" + pl.getTreeManager().getPlayerTreeCount(playerName) + "/" + pl.getAppleseedConfig().MaxTreesPerPlayer.toString() + ")");
 				}
 				event.setCancelled(true);
 				return;
@@ -103,7 +104,7 @@ public class AppleseedPlayerListener implements Listener {
 			// MinimumTreeDistance is set, make sure this tree won't be too close to another
 			if(pl.getTreeManager().IsNewTreeTooClose(blockRoot.getLocation())) {
 				if(pl.getAppleseedConfig().ShowErrorsInClient)
-					player.sendMessage("§cErr: Too close to another tree.");
+					player.sendMessage(ChatColor.RED + "Err: Too close to another tree.");
 				event.setCancelled(true);
 				return;
 			}
@@ -160,7 +161,7 @@ public class AppleseedPlayerListener implements Listener {
 				treesUpdated = true;
 			} else {
 				if(pl.getAppleseedConfig().ShowErrorsInClient)
-					player.sendMessage("§cErr: This tree cannot be fertilized.");
+					player.sendMessage(ChatColor.RED + "Err: This tree cannot be fertilized.");
 				event.setCancelled(true);
 				return;
 			}
@@ -183,7 +184,7 @@ public class AppleseedPlayerListener implements Listener {
 		// they clicked with the wand
 		if(!pl.getPlayerManager().hasPermission(player, "wand")) {
 			if(pl.getAppleseedConfig().ShowErrorsInClient)
-				player.sendMessage("§cErr: You don't have permission to do this.");
+				player.sendMessage(ChatColor.RED + "Err: You don't have permission to do this.");
 			event.setCancelled(true);
 			return;
 		}
@@ -193,13 +194,13 @@ public class AppleseedPlayerListener implements Listener {
 
 		Location loc = block.getLocation();
 		if(!pl.getTreeManager().isTree(loc)) {
-			player.sendMessage("§cErr: This is not an Appleseed tree.");
+			player.sendMessage(ChatColor.RED + "Err: This is not an Appleseed tree.");
 			return;
 		} else {
 			AppleseedTreeData tree = pl.getTreeManager().GetTree(new AppleseedLocation(loc));
 			AppleseedItemStack treeIS = tree.getItemStack();
 
-			player.sendMessage("§cAppleseed: Type=" + AppleseedItemStack.getItemStackName(treeIS) + ", NeedsFertilizer=" + tree.needsFertilizer() + ", HasSign=" + tree.hasSign());				
+			player.sendMessage(ChatColor.RED + "Appleseed: Type=" + AppleseedItemStack.getItemStackName(treeIS) + ", NeedsFertilizer=" + tree.needsFertilizer() + ", HasSign=" + tree.hasSign());				
 		}
 	}
 }

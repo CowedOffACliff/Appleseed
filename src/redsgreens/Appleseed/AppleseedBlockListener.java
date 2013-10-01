@@ -1,5 +1,6 @@
 package redsgreens.Appleseed;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -39,8 +40,7 @@ public class AppleseedBlockListener implements Listener {
 			return;
 		
 		// only proceed if it's a new sign
-		if (event.getLine(0).equalsIgnoreCase("[" + pl.getAppleseedConfig().SignTag + "]"))
-		{
+		if (event.getLine(0).equalsIgnoreCase("[" + pl.getAppleseedConfig().SignTag + "]")) {
 			AppleseedLocation aloc = new AppleseedLocation(blockAgainst.getLocation());
 			final AppleseedTreeData tree = pl.getTreeManager().GetTree(aloc);
 
@@ -59,7 +59,7 @@ public class AppleseedBlockListener implements Listener {
 				signBlock.setType(Material.AIR);
 				signBlock.getWorld().dropItemNaturally(signLoc, new ItemStack(Material.SIGN, 1));
 				if(pl.getAppleseedConfig().ShowErrorsInClient)
-					player.sendMessage("§cErr: This tree already has a sign.");
+					player.sendMessage(ChatColor.RED + "Err: This tree already has a sign.");
 				return;
 			}
 
@@ -67,12 +67,12 @@ public class AppleseedBlockListener implements Listener {
 				signBlock.setType(Material.AIR);
 				signBlock.getWorld().dropItemNaturally(signLoc, new ItemStack(Material.SIGN, 1));
 				if(pl.getAppleseedConfig().ShowErrorsInClient)
-					player.sendMessage("§cErr: You don't have permission to place this sign.");
+					player.sendMessage(ChatColor.RED + "Err: You don't have permission to place this sign.");
 				return;
 			}
 
 			// set the first line to blue
-			event.setLine(0, "§1[" + pl.getAppleseedConfig().SignTag + "]");
+			event.setLine(0, ChatColor.BLUE + "[" + pl.getAppleseedConfig().SignTag + "]");
 
 			// save the sign location
 			tree.setSign(signLoc);
@@ -101,7 +101,7 @@ public class AppleseedBlockListener implements Listener {
 		Sign sign = (Sign)signBlock.getState();
 		
 		// return if it's not an appleseed sign
-		if(!sign.getLine(0).equals("§1[" + pl.getAppleseedConfig().SignTag + "]"))
+		if(!ChatColor.stripColor(sign.getLine(0)).equals("[" + pl.getAppleseedConfig().SignTag + "]"))
 			return;
 		
 		AppleseedTreeData tree = pl.getTreeManager().GetTree(new AppleseedLocation(getBlockBehindWallSign(sign).getLocation()));
