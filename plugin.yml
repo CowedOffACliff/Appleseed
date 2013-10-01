@@ -1,4 +1,6 @@
 name: Appleseed
 main: redsgreens.Appleseed.Appleseed
-version: 0.7.4
+version: ${project.version}-b${BUILD_NUMBER}
+author: graywolf336
+authors: [redsgreens]
 website: http://dev.bukkit.org/server-mods/appleseed/
