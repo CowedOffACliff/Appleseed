@@ -79,7 +79,7 @@ public class AppleseedPlayerListener implements Listener {
 		// return if they don't have permission
 		if(!pl.getPlayerManager().hasPermission(player, "plant." + AppleseedItemStack.getItemStackName(aiStack)) || !pl.getPlayerManager().canBuild(player, blockRoot)) {
 			if(pl.getAppleseedConfig().ShowErrorsInClient)
-				player.sendMessage("�cErr: You don't have permission to plant this tree.");
+				player.sendMessage(ChatColor.RED + "Err: You don't have permission to plant this tree.");
 			event.setCancelled(true);
 			return;
 		}
