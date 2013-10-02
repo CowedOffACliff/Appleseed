@@ -32,12 +32,19 @@ public class AppleseedBlockListener implements Listener {
 		if(signBlock.getType() != Material.WALL_SIGN)
 			return;
 		
+		pl.getLogger().info("The block type is a wall sign.");
+		
 		// get the block behind the sign
 		Block blockAgainst =  getBlockBehindWallSign((Sign)signBlock.getState());
 		
 		// the sign must be on a tree
 		if(blockAgainst.getType() != Material.LOG)
 			return;
+		
+		pl.getLogger().info("The block against it is a log.");
+		
+		pl.getLogger().info("The first line is: " + event.getLine(0));
+		pl.getLogger().info("And I need it to : [" + pl.getAppleseedConfig().SignTag + "]");
 		
 		// only proceed if it's a new sign
 		if (event.getLine(0).equalsIgnoreCase("[" + pl.getAppleseedConfig().SignTag + "]")) {
