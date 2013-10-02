@@ -3,4 +3,5 @@ main: redsgreens.Appleseed.Appleseed
 version: ${project.version}-b${BUILD_NUMBER}
 author: graywolf336
 authors: [redsgreens]
+load: POSTWORLD
 website: http://dev.bukkit.org/server-mods/appleseed/
