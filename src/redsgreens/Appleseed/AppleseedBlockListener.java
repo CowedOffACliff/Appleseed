@@ -125,8 +125,11 @@ public class AppleseedBlockListener implements Listener {
 	// get the block that has a wall sign on it
 	private Block getBlockBehindWallSign(Sign sign) {
 		Block blockAgainst = null;
+		org.bukkit.material.Sign sign2 = (org.bukkit.material.Sign) sign.getData();
 		Block signBlock = sign.getBlock();
-
+		
+		pl.getLogger().info("The direction is: " + sign2.getFacing());
+		
 		if(sign.getType() == Material.WALL_SIGN) {
 			switch(signBlock.getData()){ // determine sign direction and get block behind it
 			case 2: // facing east
