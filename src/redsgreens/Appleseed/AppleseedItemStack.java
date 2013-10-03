@@ -123,6 +123,9 @@ public class AppleseedItemStack {
 	    			case 2: return "birch_sapling";
     			}
     			break;
+
+    		default:
+    			break;
     		}
     	}
     	

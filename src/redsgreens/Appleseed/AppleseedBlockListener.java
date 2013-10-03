@@ -135,6 +135,8 @@ public class AppleseedBlockListener implements Listener {
 			case SOUTH: // facing south
 				blockAgainst = signBlock.getRelative(BlockFace.NORTH);
 				break;
+			default:
+				break;
 			}
 		}
 		

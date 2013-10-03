@@ -43,8 +43,7 @@ public class AppleseedTreeManager {
     
     private Random rand = new Random();
 
-    final int treeId = Material.LOG.getId();
-    final int leafId = Material.LEAVES.getId();
+    final Material treeMat = Material.LOG, leafMat = Material.LEAVES;
 
 	public AppleseedTreeManager(Appleseed plugin) {
 		this.pl = plugin;
@@ -205,10 +204,10 @@ public class AppleseedTreeManager {
     		
         	Block block = world.getBlockAt(loc.getLocation());
         	int treeCount = 0;
-        	while(treeCount < 15 && block.getTypeId() == treeId && !trees.containsKey(block.getLocation()))
+        	while(treeCount < 15 && block.getType() == treeMat && !trees.containsKey(block.getLocation()))
         	{
         		Block blockDown = block.getRelative(BlockFace.DOWN);
-        		if(blockDown.getTypeId() == treeId)
+        		if(blockDown.getType() == treeMat)
         			block = blockDown;
         		else
         			break;
@@ -469,15 +468,15 @@ public class AppleseedTreeManager {
         
         int leafCount = 0;
 
-        if(world.getBlockTypeIdAt(rootLoc) == treeId)
+        if(world.getBlockAt(rootLoc).getType() == treeMat)
         {
             for (int y = rootY; y <= rootY+maxY; y++) {
                 for (int x = rootX-radius; x <= rootX+radius; x++) {
                     for (int z = rootZ-radius; z <= rootZ+radius; z++) {
-                        final int blockId = world.getBlockTypeIdAt(x, y, z);
-                        if(blockId == treeId) 
+                        final Material block = world.getBlockAt(x, y, z).getType();
+                        if(block == treeMat) 
                         	treeCount++;
-                        else if(blockId == leafId) 
+                        else if(block == leafMat) 
                         	leafCount++;
 
                         if(treeCount >= 3 && leafCount >= 8)
