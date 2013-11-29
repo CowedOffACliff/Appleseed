@@ -22,7 +22,6 @@ public class AppleseedTreeData {
 	private Integer dropCount;
 	private Integer intervalCount;
 	private Integer fertilizerCount;
-	private Boolean hasSign;
 	private AppleseedLocation signLocation;
 
 	private static Random rand = new Random();
@@ -31,7 +30,6 @@ public class AppleseedTreeData {
 		location = new AppleseedLocation(loc.getWorldName(), loc.getX(), loc.getY(), loc.getZ());
 		itemStack = is;
 		player = p;
-		hasSign = false;
 		signLocation = null;
 
 		treeType = plugin.getAppleseedConfig().TreeTypes.get(is);
@@ -64,7 +62,6 @@ public class AppleseedTreeData {
 		dropCount = dc;
 		intervalCount = ic;
 		fertilizerCount = fc;
-		hasSign = false;
 		signLocation = null;
 		treeType = plugin.getAppleseedConfig().TreeTypes.get(is);
 		countMode = cm;
@@ -77,7 +74,6 @@ public class AppleseedTreeData {
 		dropCount = dc;
 		intervalCount = ic;
 		fertilizerCount = fc;
-		hasSign = true;
 		signLocation = signLoc;
 		treeType = plugin.getAppleseedConfig().TreeTypes.get(is);
 		countMode = cm;
@@ -176,7 +172,7 @@ public class AppleseedTreeData {
 		treeHash.put("countmode", countMode.toString());
 		treeHash.put("fertilizercount", fertilizerCount);
 
-		if(hasSign) {
+		if(signLocation != null) {
 			treeHash.put("sign", true);
 			treeHash.put("signx", signLocation.getX());
 			treeHash.put("signy", signLocation.getY());
@@ -298,7 +294,7 @@ public class AppleseedTreeData {
 	}
 
 	public boolean hasSign() {
-		return hasSign;
+		return signLocation != null;
 	}
 
 	public AppleseedLocation getSign() {
@@ -306,12 +302,9 @@ public class AppleseedTreeData {
 	}
 
 	public void setSign(Location loc) {
-		if(loc != null) {
-			hasSign = true;
+		if(loc != null)
 			signLocation = new AppleseedLocation(loc);
-		} else {
-			hasSign = false;
+		else
 			signLocation = null;
-		}
 	}
 }
