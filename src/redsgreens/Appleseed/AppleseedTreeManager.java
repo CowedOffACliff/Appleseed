@@ -90,52 +90,43 @@ public class AppleseedTreeManager {
 							if(isTree(loc)){
 								// the tree is alive
 								AppleseedItemStack iStack = tree.getItemStack();
-								if(iStack != null)
-								{
+								if(iStack != null) {
 									AppleseedTreeType treeType = pl.getAppleseedConfig().TreeTypes.get(iStack);
 
-									if(treeType != null)
-									{
+									if(treeType != null) {
 										// and has a treetype
 										
 										Boolean dropItem = false;
 										AppleseedCountMode countMode = tree.getCountMode();
 										
-										if(countMode == AppleseedCountMode.Drop)
-										{
+										if(countMode == AppleseedCountMode.Drop) {
 											if(rand.nextInt(((Math.round(((Double)(100 / treeType.getDropLikelihood())).intValue())))) == 0)
 												if(tree.decrementCount())
 													dropItem = true;
-										}
-										else
-										{
+										} else {
 											if(tree.decrementCount())
 												if(rand.nextInt(((Math.round(((Double)(100 / treeType.getDropLikelihood())).intValue())))) == 0)
 													dropItem = true;
 										}
 
-										if(dropItem)
-										{
+										if(dropItem) {
 						    				Item item = loc.getWorld().dropItemNaturally(loc, tree.getItemStack().getItemStack());
 						    				
-						    				if(pl.getAppleseedConfig().MaxUncollectedItems != -1)
-						    				{
+						    				if(pl.getAppleseedConfig().MaxUncollectedItems != -1) {
 						    					List<Entity> itemList = item.getNearbyEntities(10, 10, 10);
 						    					Iterator<Entity> itemItr = itemList.iterator();
 						    					Integer count = 0;
 						    					
-						    					while(itemItr.hasNext())
-						    					{
+						    					while(itemItr.hasNext()) {
 						    						Entity entity = itemItr.next();
-						    						if(entity instanceof Item && !entity.isDead())
-						    						{
+						    						if(entity instanceof Item && !entity.isDead()) {
 						    							ItemStack iis = ((Item)entity).getItemStack();
 						    							if(iis.getType() == item.getItemStack().getType())
 						    								count += iis.getAmount();
 						    						}
 						    					}
 						    					
-						    					if(count > pl.getAppleseedConfig().MaxUncollectedItems)
+						    					if(count >= pl.getAppleseedConfig().MaxUncollectedItems)
 						    						item.remove();
 						    				}
 										}
@@ -489,8 +480,7 @@ public class AppleseedTreeManager {
         return false;
     }
 
-    private double calcDistanceSquared(Location loc1, Location loc2)
-    {
+    private double calcDistanceSquared(Location loc1, Location loc2) {
     	if(loc1.getWorld() != loc2.getWorld())
         	return Double.MAX_VALUE;
     	
