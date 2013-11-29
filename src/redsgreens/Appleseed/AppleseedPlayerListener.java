@@ -194,13 +194,16 @@ public class AppleseedPlayerListener implements Listener {
 
 		Location loc = block.getLocation();
 		if(!pl.getTreeManager().isTree(loc)) {
-			player.sendMessage(ChatColor.RED + "Err: This is not an Appleseed tree.");
+			player.sendMessage(ChatColor.RED + "This is not an Appleseed tree.");
 			return;
 		} else {
 			AppleseedTreeData tree = pl.getTreeManager().GetTree(new AppleseedLocation(loc));
 			AppleseedItemStack treeIS = tree.getItemStack();
-
-			player.sendMessage(ChatColor.RED + "Appleseed: Type=" + AppleseedItemStack.getItemStackName(treeIS) + ", NeedsFertilizer=" + tree.needsFertilizer() + ", HasSign=" + tree.hasSign());				
+			
+			player.sendMessage(ChatColor.DARK_AQUA + "Appleseed Tree:");
+			player.sendMessage(ChatColor.DARK_AQUA + "  Type: " + ChatColor.AQUA + AppleseedItemStack.getItemStackName(treeIS).replace("_", " "));
+			player.sendMessage(ChatColor.DARK_AQUA + "  Needs Fertilizer: " + ChatColor.AQUA + String.valueOf(tree.needsFertilizer()));
+			player.sendMessage(ChatColor.DARK_AQUA + "  Has Sign: " + ChatColor.AQUA + String.valueOf(tree.hasSign()));				
 		}
 	}
 }
