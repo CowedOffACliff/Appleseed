@@ -506,8 +506,7 @@ public class AppleseedTreeManager {
     		return retval;
     }
 
-    public synchronized void updateSign(AppleseedTreeData tree)
-    {
+    public synchronized void updateSign(AppleseedTreeData tree) {
     	if(!tree.hasSign())
     		return;
     	
@@ -524,19 +523,16 @@ public class AppleseedTreeManager {
     	Boolean signInvalid = false;
     	if(block.getType() != Material.WALL_SIGN)
     		signInvalid = true;
-    	else
-    	{
+    	else {
     		sign = (Sign)block.getState();
     		if(!sign.getLine(0).equals(ChatColor.DARK_BLUE + "[" + pl.getAppleseedConfig().SignTag + "]"))
     			signInvalid = true;
     	}
 
-    	if(signInvalid || sign == null)
-    	{
+    	if(signInvalid || sign == null) {
     		tree.setSign(null);
     		return;
     	}
-    	
     	
     	String prefix;
     	if(tree.needsFertilizer())
@@ -553,13 +549,11 @@ public class AppleseedTreeManager {
     	sign.update();
     }
     
-	public Integer getPlayerTreeCount(String playerName, String worldName)
-	{
+	public Integer getPlayerTreeCount(String playerName, String worldName) {
 		Integer retval = 0;
 		Iterator<AppleseedTreeData> itr = WorldTrees.get(worldName).values().iterator();
 		
-		while(itr.hasNext())
-		{
+		while(itr.hasNext()) {
 			AppleseedTreeData tree = itr.next();
 			if(tree.getPlayer().equalsIgnoreCase(playerName))
 				retval++;
@@ -568,13 +562,11 @@ public class AppleseedTreeManager {
 		return retval;		
 	}
 
-	public Integer getPlayerTreeCount(String playerName)
-	{
+	public Integer getPlayerTreeCount(String playerName) {
 		Integer retval = 0;
 		Iterator<String> itr = WorldTrees.keySet().iterator();
 		
-		while(itr.hasNext())
-		{
+		while(itr.hasNext()) {
 			String world = itr.next();
 			retval += getPlayerTreeCount(playerName, world);
 		}
@@ -582,8 +574,7 @@ public class AppleseedTreeManager {
 		return retval;		
 	}
 
-	public Boolean CanPlayerAddTree(String player, String world)
-	{
+	public Boolean CanPlayerAddTree(String player, String world) {
 		if(pl.getAppleseedConfig().MaxTreesPerPlayer == -1)
 			return true;
 
@@ -598,5 +589,4 @@ public class AppleseedTreeManager {
 		else
 			return false;
 	}
-	
 }

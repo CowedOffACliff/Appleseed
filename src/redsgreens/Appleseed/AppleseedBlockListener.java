@@ -53,21 +53,21 @@ public class AppleseedBlockListener implements Listener {
 
 			Player player = event.getPlayer();
 			Location signLoc = signBlock.getLocation();
-
+			
+			if(!pl.getPlayerManager().hasPermission(player, "sign.place")) {
+				signBlock.setType(Material.AIR);
+				signBlock.getWorld().dropItemNaturally(signLoc, new ItemStack(Material.SIGN, 1));
+				if(pl.getAppleseedConfig().ShowErrorsInClient)
+					player.sendMessage(ChatColor.RED + "Err: You don't have permission to place this sign.");
+				return;
+			}
+			
 			if(tree.hasSign()) {
 				// this tree already has a sign, destroy this sign and give it back to the player
 				signBlock.setType(Material.AIR);
 				signBlock.getWorld().dropItemNaturally(signLoc, new ItemStack(Material.SIGN, 1));
 				if(pl.getAppleseedConfig().ShowErrorsInClient)
 					player.sendMessage(ChatColor.RED + "Err: This tree already has a sign.");
-				return;
-			}
-
-			if(!pl.getPlayerManager().hasPermission(player, "sign.place")) {
-				signBlock.setType(Material.AIR);
-				signBlock.getWorld().dropItemNaturally(signLoc, new ItemStack(Material.SIGN, 1));
-				if(pl.getAppleseedConfig().ShowErrorsInClient)
-					player.sendMessage(ChatColor.RED + "Err: You don't have permission to place this sign.");
 				return;
 			}
 
@@ -82,7 +82,7 @@ public class AppleseedBlockListener implements Listener {
 			    public void run() {
 			    	pl.getTreeManager().updateSign(tree);
 			    }
-			}, 0);
+			}, 1);
 
 		}
 	}
