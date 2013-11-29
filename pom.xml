@@ -6,6 +6,7 @@
 	<artifactId>Appleseed</artifactId>
 	<version>0.7.6-SNAPSHOT</version>
 	<name>Appleseed</name>
+	<description>Plant trees that drop apples on the ground (or other items!).</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -38,12 +39,12 @@
 			<version>1.6.2-R0.2-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
-		
+
 		<dependency>
-	      <groupId>com.sk89q</groupId>
-	      <artifactId>worldguard</artifactId>
-	      <version>5.8.1-SNAPSHOT</version>
-	    </dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldguard</artifactId>
+			<version>5.8.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -100,5 +101,17 @@
 			</plugin>
 		</plugins>
 	</build>
-	<description>Plant trees that drop apples on the ground (or other items!).</description>
+
+	<distributionManagement>
+		<repository>
+			<id>repo-release</id>
+			<name>repo.graywolf336.com Releases</name>
+			<url>http://repo.graywolf336.com/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>repo-snapshot</id>
+			<name>repo.graywolf336.com Snapshots</name>
+			<url>http://repo.graywolf336.com/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
