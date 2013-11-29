@@ -525,7 +525,7 @@ public class AppleseedTreeManager {
     		signInvalid = true;
     	else {
     		sign = (Sign)block.getState();
-    		if(!sign.getLine(0).equalsIgnoreCase(ChatColor.BLUE + "[" + pl.getAppleseedConfig().SignTag + "]"))
+    		if(!sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[" + pl.getAppleseedConfig().SignTag + "]"))
     			signInvalid = true;
     	}
 

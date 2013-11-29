@@ -72,7 +72,7 @@ public class AppleseedBlockListener implements Listener {
 			}
 
 			// set the first line to blue
-			event.setLine(0, ChatColor.BLUE + "[" + pl.getAppleseedConfig().SignTag + "]");
+			event.setLine(0, ChatColor.DARK_BLUE + "[" + pl.getAppleseedConfig().SignTag + "]");
 
 			// save the sign location
 			tree.setSign(signLoc);
