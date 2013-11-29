@@ -507,17 +507,22 @@ public class AppleseedTreeManager {
     }
 
     public synchronized void updateSign(AppleseedTreeData tree) {
+    	pl.getLogger().info("Updating a tree's sign.");
+    	
     	if(!tree.hasSign())
     		return;
     	
+    	pl.getLogger().info("It has a sign and we are getting the world now.");
     	World world = pl.getServer().getWorld(tree.getWorld());
     	if(world == null)
     		return;
     	
+    	pl.getLogger().info("The world wasn't null so now we're getting the block the sign is at.");
     	Block block = world.getBlockAt(tree.getSign().getLocation());
     	if(block == null)
     		return;
-
+    	
+    	pl.getLogger().info("The block wasn't null, so now we're checking for a valid sign.");
     	Sign sign = null;
     	
     	Boolean signInvalid = false;
@@ -534,6 +539,8 @@ public class AppleseedTreeManager {
     		return;
     	}
     	
+    	pl.getLogger().info("The sign was a valid sign, now we're checking if the tree needs fertilizer or not.");
+    	
     	String prefix;
     	if(tree.needsFertilizer())
     		prefix = ChatColor.RED + "";
@@ -541,12 +548,16 @@ public class AppleseedTreeManager {
     		prefix = ChatColor.AQUA + "";
     	else
     		prefix = ChatColor.GREEN + "";
+    	
+    	pl.getLogger().info("The prefix is: " + prefix);
 
     	sign.setLine(1, "");
     	sign.setLine(2, prefix + AppleseedItemStack.getItemStackName(tree.getItemStack()));
     	sign.setLine(3, "");
     	
     	sign.update();
+    	
+    	pl.getLogger().info("And we've updated the sign.");
     }
     
 	public Integer getPlayerTreeCount(String playerName, String worldName) {
