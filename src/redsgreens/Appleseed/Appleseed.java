@@ -1,8 +1,5 @@
 package redsgreens.Appleseed;
 
-import java.util.HashMap;
-
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -15,7 +12,6 @@ public class Appleseed extends JavaPlugin {
 	private AppleseedPlayerListener playerListener = null;
 	private AppleseedBlockListener blockListener = null;
 	private AppleseedWorldListener worldListener = null;
-	private HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 
 	private AppleseedConfig config;
 	private AppleseedPlayerManager playerManager;
@@ -56,18 +52,6 @@ public class Appleseed extends JavaPlugin {
 		playerListener = null;
 		worldListener = null;
 		getLogger().info(getDescription().getName() + " version " + getDescription().getVersion() + " is disabled.");
-	}
-
-	public boolean isDebugging(final Player player) {
-		if (debugees.containsKey(player)) {
-			return debugees.get(player);
-		} else {
-			return false;
-		}
-	}
-
-	public void setDebugging(final Player player, final boolean value) {
-		debugees.put(player, value);
 	}
 
 	public AppleseedConfig getAppleseedConfig() {

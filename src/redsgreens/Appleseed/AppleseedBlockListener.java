@@ -77,7 +77,6 @@ public class AppleseedBlockListener implements Listener {
 			// save the sign location
 			tree.setSign(signLoc);
 			
-			
 			pl.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
 			    public void run() {
 			    	pl.getTreeManager().updateSign(tree);
