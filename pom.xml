@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>redsgreends</groupId>
 	<artifactId>Appleseed</artifactId>
-	<version>0.7.5</version>
+	<version>0.7.6-SNAPSHOT</version>
 	<name>Appleseed</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
