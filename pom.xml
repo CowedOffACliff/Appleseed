@@ -13,7 +13,7 @@
 
 	<ciManagement>
 		<system>jenkins</system>
-		<url>http://graywolfsolutions.com:8080/Hunter%20Arena/</url>
+		<url>http://ci.graywolf336.com/job/Appleseed/</url>
 	</ciManagement>
 
 	<scm>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.6.2-R0.2-SNAPSHOT</version>
+			<version>1.7.2-R0.1-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 
