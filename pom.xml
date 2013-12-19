@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>redsgreends</groupId>
 	<artifactId>Appleseed</artifactId>
-	<version>0.7.6-SNAPSHOT</version>
+	<version>0.7.6</version>
 	<name>Appleseed</name>
 	<description>Plant trees that drop apples on the ground (or other items!).</description>
 	<properties>
